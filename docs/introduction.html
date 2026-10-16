@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset=utf-8>
+	<meta http-equiv=X-UA-Compatible content=IE=edge>
+	<meta name=viewport content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Dyo - A JavaScript library for building user interfaces</title>
+	<link rel=stylesheet href=assets/stylesheet/index.css>
+	<link rel=icon type=image/png href=assets/images/favicon-large.png sizes=32x32>
+	<link rel=icon type=image/png href=assets/images/favicon-small.png sizes=16x16>
+	<script defer src=./assets/javascript/index.js></script>
+</head>
+<body>
+	<a href=./ title=index class=logo>
+		<img src=assets/images/logo.svg alt=logo>
+	</a>
+	<header>
+		<nav>
+			<a href=./>Index</a>
+			<a href=./introduction.html>Introduction</a>
+			<a href=./advanced.html>Advanced</a>
+			<a href=./api.html>API</a>
+			<a href=./examples.html>Examples</a>
+			<a href=https://github.com/dyo/dyo>GitHub</a>
+		</nav>
+	</header>
+	<article>
+		<h1>Introduction</h1>
+
+		<h1 id=installation>Installation</h1>
+
+		<p>Through a CDN:</p>
+
+		<ol>
+			<li><a href=https://unpkg.com/dyo>unpkg.com/dyo</a></li>
+			<li><a href=https://cdn.jsdelivr.net/npm/dyo>cdn.jsdelivr.net/npm/dyo</a></li>
+		</ol>
+
+<pre><code>
+&lt;script src="unpkg.com/dyo">&lt;/script>
+</code></pre>
+
+		<p>OR installed through NPM &mdash;</p>
+<pre><code>
+npm install dyo --save
+</code></pre>
+
+		<h1 id=getting-started>Getting Started</h1>
+
+		<p>The following is the "Hello World" example of Dyo.</p>
+
+<pre><code>
+import {render} from 'dyo'
+
+render('Hello, world!', document)
+</code></pre>
+
+		<p>This will render the text content 'Hello World!' into the root of the document.</p>
+
+		<h1 id=introducing-elements>Introducing Elements</h1>
+
+<pre><code>
+const element = h('h1', {}, 'Hello World')
+</code></pre>
+		<p>Elements are represented by JavaScript objects that describe what and how a particular element should look and behave.</p>
+
+		<p>Given what to render at any one point in time, the reconciler takes care of mounting and updating these elements to reflect the current state of the interface.</p>
+
+		<p>Elements are composed of three distinct parts &mdash; <strong>type</strong>, <strong>props</strong> and <strong>children</strong>. These can be used to assign desired behaviours and properties for elements to assume.</p>
+
+		<p>In the following we describe a heading element with a class attribute and the text content <em>"Hello World"</em>.</p>
+
+<pre><code>
+const element = h('h1', {class: 'red'}, 'Hello World')
+</code></pre>
+
+		<h1 id=components>Components</h1>
+
+		<p>Components are independent, reusable building blocks of an interface.</p>
+
+		<p>Conceptually, components are JavaScript functions. They accept arbitrary arguments as <code>props</code> and return elements describing the appearance and behavior of the interface.</p>
+
+<pre><code>
+function Welcome (props) {
+	return h('h1', {}, 'Hello', props.name)
+}
+</code></pre>
+
+		<h2>Rendering a Component</h2>
+
+<pre><code>
+function Welcome(props) {
+	return h('h1', {}, props.name)
+}
+
+render(h(Welcome, {name: 'World'}), document)
+</code></pre>
+
+		<p>The example demonstrates that like elements we can render components and pass arbitrary arguments <em>"props"</em> to a component similar to how might do the same for a function.</p>
+
+		<h1 id=effects>Effects</h1>
+
+		<p>Effects lets you perform side effects within a component:</p>
+
+<pre><code>
+import {useEffect} from 'dyo'
+
+function Welcome (props) {
+  useEffect(() => {
+  	document.title = `Hello World`
+	})
+
+	return h('h1', {}, 'Hello World!')
+}
+</code></pre>
+
+		<p>There are two types of efffects – <a href="hooks.html#useEffect">useEffect</a> and <a href="hooks.html#useLayout">useLayout</a>.</p>
+
+		<p>Unlike <a href="hooks.html#useLayout">useLayout</a>, <a href="hooks.html#useEffect">useEffect</a> effects are scheduled with <a href=https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame>requestAnimationFrame</a>.</p>
+
+		<hr>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Effect</th>
+					<th>When it gets called</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>useEffect</code></td>
+					<td>Executed within the next requestAnimationFrame.</td>
+				</tr>
+				<tr>
+					<td><code>useLayout</code></td>
+					<td>Before yielding back to the host process.</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h1 id=state>State</h1>
+
+		<p>Like JavaScript functions components can accept arbitrary arguments as "props", but unlike functions components can also use and allocate persistant state, localized to that particular component.</p>
+
+<pre><code>
+function Welcome (props) {
+	const [state, setState] = useState('Hello World!')
+	return h(h1, {}, state)
+}
+</code></pre>
+
+		<h1 id=events-and-state>Events &amp; State</h1>
+
+		<p>Events form the interactive bridge between the user and interface.</p>
+
+		<p>The following example demonstrates this through a text input element and an <a href=https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/oninput>onInput</a> event that is dispatched when data is exchanged.</p>
+
+<pre><code>
+function Welcome (props) {
+	const [state, setState] = useState('')
+
+	return h('form',
+		h('h1', {}, state)
+		h('input', {
+			type: 'text',
+			onInput: event => setState(event.target.value)
+		})
+	)
+}
+</code></pre>
+
+		<p>The example propagates the value of the <code>&lt;input></code> element to the value of the <code>&lt;h1></code> element whenever an <code>input</code> event is dispatched.</p>
+
+		<h1 id=interoperability>Interoperability</h1>
+
+		<p>The <em>ref</em> prop plural: <a href=element.html#refs>refs</a>; allows authors the ability to retrieve a reference to the document node that a "virtual" element actualizes when it is mounted.</p>
+
+		<p>These come in two variants: <strong>function</strong>, and <strong>object</strong> refs.</p>
+
+		<h2>Function Refs</h2>
+
+<pre><code>
+function Welcome (props) {
+	return h('h1', {ref: value => console.assert(value instanceof Node)})
+}
+</code></pre>
+
+		<h2>Object Refs</h2>
+
+<pre><code>
+function Welcome (props) {
+	const reference = useRef()
+
+	useLayout(() => {
+		console.assert(reference.current instanceof Node)
+	})
+
+	return h('h1', {ref: reference})
+}
+</code></pre>
+
+		<p>Where the later would have the objects <code>current</code> property populated with the reference to the node.</p>
+
+		<h1 id=introducing-jsx>Introducing JSX</h1>
+
+		<p>JSX is an optional syntax extension that enables one to write HTML templates interspersed with JavaScript.</p>
+
+		<p>It is not a requirement, but it may be more pleasing to use depending on your preferences.</p>
+
+		<p>For example writing <code>h('h1', {}, 'Hello')</code> as an html dialect: <code>&lt;h1>Hello&lt;/h1></code>.</p>
+
+		<h2>JSX Pragma</h2>
+
+		<p>A pragma <code>/* @jsx h */</code> is a comment that instructs the JSX compiler to use a function.</p>
+
+		<p>For example <code>h</code> as the calling function, in turn transforming <code>&lt;h1>Hello&lt;/h1></code> into <code>h('h1', null, 'Hello')</code>.</p>
+
+		<p>Most JSX compilers will support pragma comments but they are only scoped to the files they are defined in. This might make for a sub-optimal experience depending on your preferences; But it is possible to define a project setup through Babel/Typescript.</p>
+
+		<h2>Setup</h2>
+
+		<p>Babel &mdash;</p>
+
+		<blockquote>
+			<a href=http://babeljs.io>Babel</a> is a JavaScript transpiler best known for its ability to turn ES6 (the next version of JavaScript) into code that runs in your browser (or on your server) today.
+		</blockquote>
+
+<pre><code>
+{
+	"plugins": [
+		["transform-react-jsx", {
+			"pragma": "h",
+			"pragmaFrag": "Fragment"
+		}]
+	]
+}
+</code></pre>
+
+		<p>Typescript &mdash;</p>
+
+		<blockquote>
+			<a href=https://www.typescriptlang.org>Typescript</a> is a typed superset of JavaScript that compiles to plain JavaScript.
+		</blockquote>
+
+<pre><code>
+{
+	"compilerOptions": {
+		"jsx": "React",
+		"jsxFactory": "h"
+	}
+}
+</code></pre>
+
+		<h1>Moving Foward</h1>
+
+		<p>There are details we haven't gone into that hopefully the <a href=./api.html>API</a> and <a href=./advanced.html>Advanced</a> sections can help document.</p>
+
+		<p>At this point you can jump right into creating something, look at some <a href=./examples.html>Examples</a> or learn and contribute on <a href=https://github.com/dyo/dyo>GitHub</a>.</p>
+	</article>
+</body>
+</html>
