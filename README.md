@@ -1,4 +1,4 @@
-# Dyo
+# Bhim majhi 
 
 [![Dyo](https://dyo.js.org/assets/images/logo.svg)](https://dyo.js.org)
 
