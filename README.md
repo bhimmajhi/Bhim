@@ -1,15 +1,9 @@
 # Bhim majhi 
 
-[![Dyo](https://dyo.js.org/assets/images/logo.svg)](https://dyo.js.org)
+[![Dyo](https://bhimmajhi.github.io/Bhim/logo.svg)](https://bhimmajhi.github.io/Bhim/)
 
 A JavaScript library for building user interfaces.
 
-[![Coverage](https://coveralls.io/repos/github/dyo/dyo/badge.svg?branch=master)](https://coveralls.io/github/dyo/dyo)
-[![Size](https://badgen.net/bundlephobia/minzip/dyo)](https://bundlephobia.com/result?p=dyo)
-[![Licence](https://badgen.net/badge/license/MIT/blue)](https://github.com/dyo/dyo/blob/master/LICENSE.md)
-[![NPM](https://badgen.net/npm/v/dyo)](https://www.npmjs.com/package/dyo)
-
-## Installation
 
 * Use a Direct Download: `<script src=dyo.js></script>`
 * Use a CDN: `<script src=unpkg.com/dyo></script>`
@@ -17,22 +11,21 @@ A JavaScript library for building user interfaces.
 
 ## Documentation
 
-Documentation can be find [on the website](https://dyo.js.org).
+Documentation can be find [on the website](https://bhimmajhi.github.io/Bhim/).
 
-See the [Getting Started](https://dyo.js.org/introduction.html) page for a quick overview.
+See the [Getting Started](https://bhimmajhi.github.io/Bhim/introduction.html) page for a quick overview.
 
 The documentation is divided into several sections:
 
-* [Introduction](https://dyo.js.org/introduction.html)
-* [API Reference](https://dyo.js.org/api.html)
-* [Advanced Guides](https://dyo.js.org/advanced.html)
-* [Examples](https://dyo.js.org/examples.html)
-
-You can improve it by sending pull requests to [this repository](https://github.com/dyo/dyo/tree/master/docs).
+* [Introduction](https://bhimmajhi.github.io/Bhim/introduction.html)
+* [API Reference](https://bhimmajhi.github.io/Bhim/api.html)
+* [Advanced Guides](https://bhimmajhi.github.io/Bhim/advanced.html)
+* [Examples](http
+* (https://bhimmajhi.github.io/Bhim/examples.html)
 
 ## Examples
 
-Several examples can be found [on the website](https://dyo.js.org/examples.html). Here's one to get started:
+Several examples can be found [on the website](https://bhimmajhi.github.io/Bhim/examples.html). Here's one to get started:
 
 ```js
 import {h, render} from 'dyo'
