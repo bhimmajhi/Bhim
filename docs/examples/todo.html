@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<meta http-equiv=X-UA-Compatible content=IE=edge>
+		<meta name=viewport content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Todo App</title>
+		<script src=https://unpkg.com/dyo></script>
+	</head>
+	<body>
+		<main></main>
+		<script>
+			const {h, render, useReducer} = dyo
+			const target = document.querySelector('main')
+
+			const reducer = ({value = '', entries = []}, {type, payload}) => {
+				switch (type) {
+					case 'INPUT':
+						return {value: payload, entries: entries}
+					case 'SUBMIT':
+						return {value: '', entries: !value ? entries : entries.concat({active: false, key: Math.random(), value: payload})}
+					case 'DELETE':
+						return {value: '', entries: entries.filter(entry => entry.key !== payload)}
+					case 'ACTIVE':
+						return {value: '', entries: entries.map(entry => entry.key !== payload ? entry : {...entry, active: !entry.active})}
+				}
+			}
+
+		  const Entry = ({key, value, active, dispatch}) => {
+		  	return (
+			  	h('li', {style: {margin: '8px 0', textTransform: 'capitalize'}},
+			  		h('label', {},
+			  			h('input', {type: 'checkbox', checked: active, style: {marginRight: '5px'}, onInput: event => {
+			  				dispatch({type: 'ACTIVE', payload: key})
+			  			}}),
+			  			h('span', {style: active ? {color: 'rgba(0,0,0,.3)', textDecoration: 'line-through'} : null}, value),
+			  			h('a', {
+			  				style: {color: 'red', marginLeft: '10px'}, onClick: event => dispatch({type: 'DELETE', payload: key})
+			  			}, '×')
+			  		)
+			  	)
+			  )
+		  }
+
+			const Main = (props) => {
+				const [{value, entries}, dispatch] = useReducer(reducer, {value: '', entries: []})
+
+		  	return (
+			  	h('main', {style: {fontFamily: 'sans-serif', background: '#eee', padding: '20px'}},
+						h('h2', {}, 'Todos:'),
+			  		h('ol', {}, entries.map(props => h(Entry, {...props, dispatch}))),
+			  		h('form', {onSubmit: event => {
+			  			dispatch({type: 'SUBMIT', payload: value})
+			  			event.preventDefault()
+			  		}},
+			  			h('input', {value: value, onInput: event => dispatch({type: 'INPUT', payload: event.target.value})}),
+			  			h('button', {}, 'Add Todo')
+			  		)
+			  	)
+			  )
+			}
+
+			render(h(Main), target)
+		</script>
+	</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<meta http-equiv=x-ua-compatible content=ie=edge>
+		<meta name=viewport content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>UIBench</title>
+		<script src=https://unpkg.com/dyo></script>
+		<script src=https://localvoid.github.io/uibench-base/0.1.0/uibench.js></script>
+		<link rel=stylesheet href=https://localvoid.github.io/uibench-base/0.1.0/styles.css>
+	</head>
+	<body>
+		<main></main>
+		<script>
+			const {h, memo, render} = dyo
+			const target = document.querySelector('main')
+
+			const TableCell = memo(({text}) => {
+				return h('td', {className: 'TableCell', onClick: (event, {text}) => {
+					console.log('Clicked' + text)
+					event.stopPropagation()
+				}}, text)
+			}, (prev, next) => prev.text === next.text)
+
+			const TableRow = memo (({data}) => {
+				const classes = data.active ? 'TableRow active' : 'TableRow'
+				const cells = data.props
+				const length = cells.length
+				const children = []
+
+				for (var i = 0; i < length; i++) {
+      		children[i] = h(TableCell, {key: i, text: cells[i]})
+			  }
+
+				return h('tr', {className: classes, 'data-id': data.id}, h(TableCell, {text: '#' + data.id}), children)
+			}, (prev, next) => prev.data === next.data)
+
+			const Table = memo(({data}) => {
+				const {items} = data
+	    	const {length} = items
+	    	const children = []
+
+    		for (var i = 0; i < length; i = i + 1) {
+    			const item = items[i]
+					children[i] = h(TableRow, {key: item.id, data: item})
+    		}
+
+	    	return h('table', {className: 'Table'}, h('tbody', {}, children))
+			}, (prev, next) => prev.data === next.data)
+
+			const AnimBox = memo(({data}) => {
+	    	const {time} = data
+    		const style = 'border-radius:'+(time % 10)+'px;background:rgba(0,0,0,'+(0.5 + ((time % 10) / 10))+')'
+
+    		return h('div', {className: 'AnimBox', 'data-id': data.id, style: style})
+			}, (prev, next) => prev.data === next.data)
+
+
+			const Anim = memo(({data}) => {
+				const {items} = data
+	    	const {length} = items
+    		const children = []
+
+    		for (var i = 0; i < length; i = i + 1) {
+    			const item = items[i]
+    			children[i] = h(AnimBox, {key: item.id, data: item})
+    		}
+
+    		return h('div', {className: 'Anim'}, children)
+			}, (prev, next) => prev.data === next.data)
+
+			const TreeLeaf = memo(({data}) => {
+    		return h('li', {className: 'TreeLeaf'}, data.id);
+			}, (prev, next) => prev.data === next.data)
+
+			const TreeNode = memo(({data}) => {
+				const {length} = data.children
+				const children = []
+
+				for (let i = 0; i < length; i++) {
+					const n = data.children[i]
+					children[i] = h(n.container ? TreeNode : TreeLeaf, {key: n.id, data: n})
+				}
+
+				return h('ul', {className: 'TreeNode'}, children)
+			}, (prev, next) => prev.data === next.data)
+
+			const Tree = memo(({data}) => {
+				return h('div', {className: 'Tree'},
+					h(TreeNode, {data: data.root})
+				)
+			}, (prev, next) => prev.data === next.data)
+
+			const Main = memo(({data}) => {
+				const {location} = data
+				const props = {data: data[location]}
+				const section = h(location === 'table' ? Table : location === 'anim' ? Anim : Tree, props)
+
+				return h('div', {className: 'Main'}, section)
+			}, (prev, next) => prev.data === next.data)
+
+			uibench.init('Dyo')
+
+			document.addEventListener('DOMContentLoaded', () => {
+				uibench.run(
+					data => render(h(Main, {data}), target),
+					data => render(h('pre', {}, JSON.stringify(data, null, 2)), target)
+				)
+			})
+		</script>
+	</body>
+</html>
